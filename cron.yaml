@@ -1,0 +1,5 @@
+cron:
+- description: every day morning
+  url: /cron/daily
+  schedule: every day 09:00
+  timezone: Asia/Taipei
