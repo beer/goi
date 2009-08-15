@@ -7,12 +7,33 @@
 <body>
 <script type="text/javascript" charset="utf-8">
 $(function() {
-	$('#name').text('{{ UserName }}');
-	
 });	
 </script>
-<a href="/">{{ Title }}</a>
-<div id="name">
-</div>
+<h1><a href="/">{{ Title }}</a></h1>
+<a href="{{ Url }}">{{ Label }}</a>
+<div id="name">{{ Msg }}</div>
+<hr>
+{% if player %}
+    <h3>Self:</h3>
+    <b>{{ player.name }}</b>
+    money: {{ player.money }}
+    power: {{ player.power }}
+    vigor: {{ player.vigor }}
+    fame: {{ player.fame }}
+    <hr>
+{% else %}
+    {% ifequal Label "Logout" %}
+<form action="/join" method="post">
+    Nickname:<input type="text" name="name" value="">
+    <br>
+    <input type="submit" value="join">
+</form>
+    {% endifequal %}
+{% endif %}
+<h3>Players:</h3>
+{% for p in players %}
+<b>{{ p.name }}</b> money: {{ p.money }}, power: {{ p.power }}, vigor: {{ p.vigor }}, fame: {{ p.fame }}<br>
+{% endfor %}
+
 </body>
 </html>
