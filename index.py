@@ -9,14 +9,21 @@ from google.appengine.ext import db
 
 class MainPage(webapp.RequestHandler):
     def get(self):
-    	url = 'xxx';
-	template_values = {
-	    'Title': 'God of Investment',
-	    'Url': 'goi.pivmi.info',
-	}
+	user = users.get_current_user()
+	if user:
+	    username = user.nickname()
+	    url = 'xxx';
+	    template_values = {
+		'Title': 'God of Investment',
+		'Url': 'goi.pivmi.info',
+		'UserName': username
+		}
+	    path = os.path.join(os.path.dirname(__file__), 'index.html')
+	    self.response.out.write(template.render(path, template_values))
+	else:
+	    self.redirect(users.create_login_url(self.request.uri))
 
-    	path = os.path.join(os.path.dirname(__file__), 'index.html')
-	self.response.out.write(template.render(path, template_values))
+
 
 application = webapp.WSGIApplication(
 					[('/', MainPage)],
