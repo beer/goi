@@ -5,7 +5,11 @@ api_version: 1
 
 handlers:
 - url: /cron/daily
-  script: /cron/daily.py
+  script: cron/daily.py
+  login: admin
+
+- url: /env/init
+  script: env/init.py
   login: admin
 
 - url: /static

@@ -7,6 +7,12 @@
 <body>
 <script type="text/javascript" charset="utf-8">
 $(function() {
+    $(".job-form").submit(function() {
+	var act = $(this).attr('action');
+	var vars = $(this).serializeArray();
+	$.post(act, vars);
+	return false;
+    });
 });	
 </script>
 <h1><a href="/">{{ Title }}</a></h1>
@@ -30,6 +36,16 @@ $(function() {
 </form>
     {% endifequal %}
 {% endif %}
+<h3>Work list:</h3>
+{% for j in jobs %}
+<form action="/work" method="post" class="job-form">
+    <b>{{ j.name }}</b> salary: {{ j.salary }}<br>
+    <input type="hidden" name="player" value="{{ player.key }}">
+    <input type="hidden" name="job" value="{{ j.key }}">
+    <input type="text" name="hour" size="1" maxlength="1" value="1">
+    <input type="submit" value="Go">
+</form>
+{% endfor %}
 <h3>Players:</h3>
 {% for p in players %}
 <b>{{ p.name }}</b> money: {{ p.money }}, power: {{ p.power }}, vigor: {{ p.vigor }}, fame: {{ p.fame }}<br>
