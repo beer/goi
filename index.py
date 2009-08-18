@@ -1,7 +1,7 @@
 import cgi
 import os
-import datetime
-import time
+from datetime import datetime
+from time import time
 
 from google.appengine.ext.webapp import template
 from google.appengine.api import users
@@ -9,28 +9,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
-class User(db.Model):
-    user = db.UserProperty()
-    name = db.StringProperty()
-    vigor = db.IntegerProperty()
-    money = db.IntegerProperty()
-    fame = db.IntegerProperty()
-    power = db.IntegerProperty()
+import goi
 
-class Job(db.Model):
-    name = db.StringProperty()
-    salary = db.IntegerProperty()
-    wear = db.IntegerProperty()
-
-class GlobalJob(Job):
-    extra = db.IntegerProperty()
-
-class Task(db.Model):
-    player = db.ReferenceProperty(reference_class=User, collection_name='tasks')
-    job = db.ReferenceProperty(reference_class=Job)
-    category = db.CategoryProperty()
-    st = db.DateTimeProperty(auto_now_add=True)
-    et = db.DateTimeProperty()
+_DEBUG = True
 
 class MainPage(webapp.RequestHandler):
     def get(self):
@@ -38,8 +19,8 @@ class MainPage(webapp.RequestHandler):
 	"""
 
 	user = users.get_current_user()
-	players = User.all()
-	jobs = Job.all()
+	players = goi.User.all()
+	jobs = goi.Job.all()
 	if user:
 	    msg = 'Hello! ' + user.nickname()
 	    url = users.create_logout_url(self.request.uri)
@@ -66,7 +47,7 @@ class MainPage(webapp.RequestHandler):
 
 class Join(webapp.RequestHandler):
     def post(self):
-	player = User()
+	player = goi.User()
 	if users.get_current_user():
 	    player.user = users.get_current_user()
 	    player.name = self.request.get('name')
@@ -89,14 +70,13 @@ class Work(webapp.RequestHandler):
 	if job and player:
 	    job = db.get(job)
 	    player = db.get(player)
-	    now = int(time.time())
+	    now = int(time())
 	    perhour = 60
-	    endtime = datetime.datetime.fromtimestamp(int(hour) * perhour + now)
-	    starttime = datetime.datetime.fromtimestamp(now)
+	    endtime = datetime.fromtimestamp(int(hour) * perhour + now)
+	    starttime = datetime.fromtimestamp(now)
 	    
-	    task = Task(player=player, job=job, category=db.Category('job'),st=starttime, et=endtime)
+	    task = goi.Task(player=player, job=job, category=db.Category('job'),st=starttime, et=endtime)
 	    task.put()
-	    time.sleep(int(perhour) * int(hour))
 	    player.money = player.money + job.salary * int(hour)
 	    player.put()
 
